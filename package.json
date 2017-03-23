@@ -1,0 +1,19 @@
+{
+  "name": "new-project-js",
+  "version": "0.0.1",
+  "description": "Create a new javascript project with npm, git and other dependencies",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Clint Pamperin",
+  "license": "MIT",
+  "dependencies": {
+    "colorful-text": "0.0.1",
+    "es6-promise": "^4.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^7.0.10",
+    "typescript": "^2.2.1"
+  }
+}
