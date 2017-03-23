@@ -1,7 +1,7 @@
-import { Process } from './Process';
+import { Npm } from './Npm';
 
-export class NpmInit extends Process {
+export class NpmInit extends Npm {
     constructor() {
-        super('npm', ['init']);
+        super('init');
     }
 }
