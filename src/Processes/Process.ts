@@ -5,7 +5,7 @@ import * as childProcess from 'child_process';
 export class Process {
     public $process: childProcess.ChildProcess;
 
-    constructor(private name: string, private args: string[], private opts: childProcess.SpawnOptions) { }
+    constructor(private name: string, private args: string[], private opts: childProcess.SpawnOptions = null) { }
 
     public start() {
         return new Promise((resolve, reject) => {
