@@ -10,7 +10,8 @@
   "license": "MIT",
   "dependencies": {
     "colorful-text": "0.0.1",
-    "es6-promise": "^4.1.0"
+    "es6-promise": "^4.1.0",
+    "node-cli-args": "^1.0.6"
   },
   "devDependencies": {
     "@types/node": "^7.0.10",
