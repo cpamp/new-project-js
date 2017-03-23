@@ -16,5 +16,13 @@
   "devDependencies": {
     "@types/node": "^7.0.10",
     "typescript": "^2.2.1"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cpamp21/new-project-js.git"
+  },
+  "bugs": {
+    "url": "https://github.com/cpamp21/new-project-js/issues"
+  },
+  "homepage": "https://github.com/cpamp21/new-project-js#readme"
 }
