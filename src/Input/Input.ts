@@ -1,11 +1,18 @@
 import { Promise } from 'es6-promise';
 import * as prompt from 'prompt';
 
+prompt.start();
+
 export class Input {
     static request(text: string) {
         return new Promise<string>((resolve, reject) => {
-            process.stdout.write(text);
-            prompt.get(['data'], (err, result) => {
+            prompt.get({
+                name: 'data',
+                description: text,
+                type: 'string',
+                default: '',
+                required: false
+            }, (err, result) => {
                 if (err) {
                     reject(err);
                 } else {
@@ -13,5 +20,9 @@ export class Input {
                 }
             });
         });
+    }
+
+    static end() {
+        prompt.stop();
     }
 }
