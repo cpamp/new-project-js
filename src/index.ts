@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import { Input } from './Input/Input';
 import * as color from 'colorful-text';
 import { GitInit } from './Processes/GitInit';
