@@ -10,7 +10,7 @@ export const Event = {
 export class Process {
     public $process: childProcess.ChildProcess;
 
-    constructor(private name: string, private args: string[], private opts: childProcess.SpawnOptions = null) { }
+    constructor(private name: string, private args: string[], private opts: childProcess.SpawnOptions = void 0) { }
 
     public start() {
         return new Promise((resolve, reject) => {
@@ -39,8 +39,29 @@ export class Process {
         });
     }
 
+    public detectEndNextInput(hasStr: string) {
+        this.$process.stdout.on(Event.DATA, (data: Buffer) => {
+            if (data.toString().indexOf(hasStr) !== -1) {
+                process.stdin.on(Event.DATA, () => {
+                    this.$process.stdin.end();
+                    this.$process.stdout.unpipe();
+                    this.$process.kill();
+                });
+            }
+        });
+    }
+
+    public detectEnd(hasStr: string) {
+        this.$process.stdout.on(Event.DATA, (data: Buffer) => {
+            if (data.toString().indexOf(hasStr) !== -1) {
+                this.$process.stdin.end();
+                this.$process.stdout.unpipe();
+                this.$process.kill();
+            }
+        });
+    }
+
     public onOutput(fn: (data: Buffer) => void) {
-        this.$process.stdout.removeAllListeners(Event.DATA);
         this.$process.stdout.on(Event.DATA, (data: Buffer) => {
             fn.call(this, data);
         });
