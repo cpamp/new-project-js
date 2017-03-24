@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+import { Promise } from 'es6-promise';
 import { Input } from './Input/Input';
 import * as color from 'colorful-text';
 import { GitInit } from './Processes/GitInit';
@@ -13,13 +14,16 @@ import { GitCommit } from './Processes/GitCommit';
 
 var repository: string = '';
 var typescript: boolean = false;
-Input.request('Enter a git repository: ').then((repo: string) => {
+Input.request('Enter a git repository').then((repo: string) => {
     repository = repo;
-    return Input.request('Is this a Typescript project? (yes) ');
+    return Input.request('Is this a Typescript project? (yes)');
 }).then((ts: string) => {
-    typescript = /^.*[Yy].*$/.test(ts);
+    typescript = /^.*[Yy].*$/.test(ts) || /^ *$/.test(ts);
 }).then(() => {
-    return new GitInit().start();
+    var git = new GitInit();
+    var p = git.start();
+    git.detectEnd('Initialized empty');
+    return p;
 }).then(() => {
     if (!/^ *$/.test(repository)) {
         return new GitRemote(repository).start();
@@ -27,12 +31,7 @@ Input.request('Enter a git repository: ').then((repo: string) => {
 }).then(() => {
     var npmInit = new NpmInit();
     var p = npmInit.start();
-    npmInit.onOutput((data: Buffer) => {
-        var str: string = data.toString();
-        if (str.indexOf('Is this ok?') !== -1) {
-            npmInit.$process.stdin.end();
-        }
-    });
+    npmInit.detectEndNextInput('Is this ok?');
     return p;
 }).then(() => {
     if (typescript) {
