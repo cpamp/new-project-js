@@ -11,28 +11,42 @@ import { TscInit } from './Processes/TscInit';
 import { FileWriter } from './Files/FileWriter';
 import { GitAdd } from './Processes/GitAdd';
 import { GitCommit } from './Processes/GitCommit';
+import { FileReader } from './Files/FileReader';
+
+import * as Nca from 'node-cli-args';
 
 var repository: string = '';
 var typescript: boolean = false;
-Input.request('Enter a git repository').then((repo: string) => {
+
+var args = new Nca.ArgumentManager();
+args.on(new Nca.Argument('repository'), (repo) => {
     repository = repo;
-    return Input.request('Is this a Typescript project? (yes)');
-}).then((ts: string) => {
-    typescript = /^.*[Yy].*$/.test(ts) || /^ *$/.test(ts);
+});
+
+args.on(new Nca.Argument('typescript', 't'), () => {
+    typescript = true;
+})
+
+new Promise((resolve) => {resolve();}).then(() => {
+    if (repository === '') {
+        return Input.request('Enter a git repository: ').then((repo: string) => {
+            repository = repo;
+        });
+    }
 }).then(() => {
-    var git = new GitInit();
-    var p = git.start();
-    git.detectEnd('Initialized empty');
-    return p;
+    if (!typescript) {
+        return Input.request('Is this a Typescript project? (yes): ').then((ts: string) => {
+            typescript = /^.*[Yy].*$/.test(ts) || /^ *$/.test(ts);
+        });
+    }
+}).then(() => {
+    return new GitInit().start();
 }).then(() => {
     if (!/^ *$/.test(repository)) {
         return new GitRemote(repository).start();
     }
 }).then(() => {
-    var npmInit = new NpmInit();
-    var p = npmInit.start();
-    npmInit.detectEndNextInput('Is this ok?');
-    return p;
+    return new NpmInit().start();
 }).then(() => {
     if (typescript) {
         return new NpmInstall('typescript').start().then(() => {
@@ -43,6 +57,13 @@ Input.request('Enter a git repository').then((repo: string) => {
     return new TscInit().start();
 }).then(() => {
     return FileWriter.createGitIgnore();
+}).then(() => {
+    return FileReader.readFile('package.json').then((pkg: Buffer) => {
+        return JSON.parse(pkg.toString());
+    }).then((pkgObj) => {
+        var name = pkgObj.name;
+        return FileWriter.createWrite('README.md', '# ' + name);
+    });
 }).then(() => {
     return new GitAdd().start();
 }).then(() => {
