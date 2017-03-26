@@ -10,14 +10,20 @@ export const Event = {
 export class Process {
     public $process: childProcess.ChildProcess;
 
-    constructor(private name: string, private args: string[], private opts: childProcess.SpawnOptions = void 0) { }
+    protected $onStart: () => void = () => {};
+
+    constructor(private name: string, private args: string[], private opts: childProcess.SpawnOptions = void 0, private stdPipe: boolean = true) { }
 
     public start() {
         return new Promise((resolve, reject) => {
             try {
                 this.$process = childProcess.spawn(this.name, this.args, this.opts);
-                process.stdin.pipe(this.$process.stdin);
-                this.$process.stdout.pipe(process.stdout);
+                if (this.stdPipe) {
+                    process.stdin.pipe(this.$process.stdin);
+                    this.$process.stdout.pipe(process.stdout);
+                }
+
+                if (typeof this.$onStart === 'function') { this.$onStart(); }
 
                 this.$process.on(Event.EXIT, () => {
                     process.stdin.unpipe();
