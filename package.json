@@ -1,6 +1,6 @@
 {
   "name": "new-project-js",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Create a new javascript project with npm, git and other dependencies",
   "main": "bin/index.js",
   "bin": {
