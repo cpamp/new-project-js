@@ -14,5 +14,8 @@ new-project-js will create a git repository, add an origin if provided, create a
 `--typescript`, `-t`  
 Indicate that this is a Typescript project.  
 
+`--ts-update`, `-u`  
+Indicate that this is a Typescript project and update Typescript if detected
+
 `--repository=<My_Repo>`  
 Provide a remote repository.  
